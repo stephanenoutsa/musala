@@ -1,0 +1,10 @@
+INSERT INTO drone (serial_number, model, weight_limit, battery_capacity, state) VALUES ('9751fb8e-82cf-11ed-a1eb-0242ac120002', 'Lightweight', 500, 100, 'IDLE');
+INSERT INTO drone (serial_number, model, weight_limit, battery_capacity, state) VALUES ('97520322-82cf-11ed-a1eb-0242ac120002', 'Middleweight', 500, 100, 'IDLE');
+INSERT INTO drone (serial_number, model, weight_limit, battery_capacity, state) VALUES ('9752049e-82cf-11ed-a1eb-0242ac120002', 'Cruiserweight', 500, 100, 'IDLE');
+INSERT INTO drone (serial_number, model, weight_limit, battery_capacity, state) VALUES ('97520688-82cf-11ed-a1eb-0242ac120002', 'Heavyweight', 500, 100, 'IDLE');
+INSERT INTO drone (serial_number, model, weight_limit, battery_capacity, state) VALUES ('975207be-82cf-11ed-a1eb-0242ac120002', 'Lightweight', 500, 100, 'IDLE');
+INSERT INTO drone (serial_number, model, weight_limit, battery_capacity, state) VALUES ('975208d6-82cf-11ed-a1eb-0242ac120002', 'Middleweight', 500, 100, 'IDLE');
+INSERT INTO drone (serial_number, model, weight_limit, battery_capacity, state) VALUES ('97520a66-82cf-11ed-a1eb-0242ac120002', 'Cruiserweight', 500, 100, 'IDLE');
+INSERT INTO drone (serial_number, model, weight_limit, battery_capacity, state) VALUES ('97520bce-82cf-11ed-a1eb-0242ac120002', 'Heavyweight', 500, 100, 'IDLE');
+INSERT INTO drone (serial_number, model, weight_limit, battery_capacity, state) VALUES ('97520cf0-82cf-11ed-a1eb-0242ac120002', 'Lightweight', 500, 100, 'IDLE');
+INSERT INTO drone (serial_number, model, weight_limit, battery_capacity, state) VALUES ('97521272-82cf-11ed-a1eb-0242ac120002', 'Middleweight', 500, 100, 'IDLE');
