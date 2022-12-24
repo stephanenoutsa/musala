@@ -10,12 +10,21 @@ import com.musala.drones.repositories.MedicationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 @Service
 public class MedicationService {
@@ -28,11 +37,72 @@ public class MedicationService {
 	@Autowired
 	private ModelMapper modelMapper;
 	
-	public Boolean loadMedicationsOnDrone(String serialNumber, List<String> medicationCodes) {
+	public static String UPLOAD_DIRECTORY = "uploads";
+	
+	public Map<String, String> uploadImage(MultipartFile file) {
 		try {
-			UUID uuid = UUID.fromString(serialNumber);
+			StringBuilder fileNames = new StringBuilder();
 			
-			Optional<Drone> drone = this.droneRepository.findBySerialNumber(uuid);
+	        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, file.getOriginalFilename());
+	        fileNames.append(file.getOriginalFilename());
+	        Files.write(fileNameAndPath, file.getBytes());
+	        System.out.println("Uploaded images: " + fileNameAndPath.toString());
+	        
+	        Map<String, String> imageUrl = new HashMap<String, String>();
+	        imageUrl.put("imageUrl", fileNameAndPath.toString());
+	        
+	        return imageUrl;
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+			return null;
+		}
+	}
+	
+	public MedicationDto saveMedication(MedicationDto medicationDto) {
+		try {
+			// TODO: Validate medicationDto
+
+			Medication medication = convertDtoToEntity(medicationDto);
+			
+			medication = this.medicationRepository.save(medication);
+			
+			if (medication == null) {
+				return null;
+			}
+			
+			return convertEntityToDto(medication);
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			return null;
+		}
+	}
+	
+	public List<MedicationDto> findMedications() {
+		try {
+			List<Medication> medications = this.medicationRepository.findAll();
+			List<MedicationDto> medicationDtos = medications
+					.stream()
+					.map(medication -> convertEntityToDto(medication))
+					.collect(Collectors.toList());
+			
+			if (medicationDtos == null) {
+				return new ArrayList<>();
+			}
+			
+			return medicationDtos;
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			return new ArrayList<>();
+		}
+	}
+	
+	@Transactional
+	public Boolean loadMedicationsOnDrone(UUID serialNumber, List<String> medicationCodes) {
+		try {
+			Optional<Drone> drone = this.droneRepository.findBySerialNumber(serialNumber);
 			
 			if (!drone.isPresent()) {
 				return false;
@@ -58,7 +128,7 @@ public class MedicationService {
 			}
 			
 			// Set drone state to 'LOADING'
-			this.droneRepository.updateDroneState(State.LOADING, uuid);
+			this.droneRepository.updateDroneState(State.LOADING, serialNumber);
 			
 			for (Medication medication : medicationsToLoad) {
 				int weight = medication.getWeight();
@@ -74,7 +144,7 @@ public class MedicationService {
 			}
 			
 			// Set drone state to 'LOADED'
-			this.droneRepository.updateDroneState(State.LOADED, uuid);
+			this.droneRepository.updateDroneState(State.LOADED, serialNumber);
 			
 			return true;
 		} catch (Exception e) {
@@ -84,11 +154,9 @@ public class MedicationService {
 		}
 	}
 	
-	public List<MedicationDto> findMedicationsOnDrone(String serialNumber) {
+	public List<MedicationDto> findMedicationsOnDrone(UUID serialNumber) {
 		try {
-			UUID uuid = UUID.fromString(serialNumber);
-			
-			List<Medication> medications = this.medicationRepository.findMedicationsOnDrone(uuid);
+			List<Medication> medications = this.medicationRepository.findMedicationsOnDrone(serialNumber);
 			
 			List<MedicationDto> medicationDtos = medications
 					.stream()
@@ -105,6 +173,12 @@ public class MedicationService {
 			
 			return new ArrayList<>();
 		}
+	}
+	
+	private Medication convertDtoToEntity(MedicationDto medicationDto) {
+		Medication medication = modelMapper.map(medicationDto, Medication.class);
+		
+		return medication;
 	}
 	
 	private MedicationDto convertEntityToDto(Medication medication) {
