@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,20 +43,22 @@ public class DroneService {
 		}
 	}
 	
-	public List<DroneDto> findIdleDrones() {
+	public List<DroneDto> findDrones(State state) {
 		try {
-			List<Drone> idleDrones = this.droneRepository.findByState(State.IDLE);
+			List<Drone> drones = state != null 
+					? this.droneRepository.findByState(state)
+					: this.droneRepository.findAll();
 			
-			List<DroneDto> idleDroneDtos = idleDrones
+			List<DroneDto> droneDtos = drones
 					.stream()
 					.map(drone -> convertEntityToDto(drone))
 					.collect(Collectors.toList());
 			
-			if (idleDroneDtos == null) {
+			if (droneDtos == null) {
 				return new ArrayList<>();
 			}
 			
-			return idleDroneDtos;
+			return droneDtos;
 		} catch (Exception e) {
 			e.printStackTrace();
 			
@@ -62,17 +66,18 @@ public class DroneService {
 		}
 	}
 	
-	public Integer getDroneBatteryCapacity(String serialNumber) {
+	public Map<String, Integer> getDroneBatteryCapacity(UUID serialNumber) {
 		try {
-			UUID uuid = UUID.fromString(serialNumber);
-			
-			Optional<Drone> drone = this.droneRepository.findBySerialNumber(uuid);
+			Optional<Drone> drone = this.droneRepository.findBySerialNumber(serialNumber);
 			
 			if (!drone.isPresent()) {
 				return null;
 			}
 			
-			return drone.get().getBatteryCapacity();
+			Map<String, Integer> batteryCapacity = new HashMap<String, Integer>();
+			batteryCapacity.put("batteryCapacity", drone.get().getBatteryCapacity());
+			
+			return batteryCapacity;
 		} catch (Exception e) {
 			e.printStackTrace();
 			
