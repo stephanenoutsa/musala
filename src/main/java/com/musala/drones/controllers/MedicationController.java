@@ -6,6 +6,7 @@ import com.musala.drones.services.MedicationService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -55,14 +56,18 @@ public class MedicationController {
 	
 	@PostMapping("/drones/{serialNumber}/medications")
 	public ResponseEntity<?> loadMedicationsOnDrone(@PathVariable UUID serialNumber, @RequestBody List<String> codes) {
-		Boolean loaded = this.medicationService.loadMedicationsOnDrone(serialNumber, codes);
+		Map<String, HttpStatus> map = this.medicationService.loadMedicationsOnDrone(serialNumber, codes);
+		Optional<Map.Entry<String,HttpStatus>> entry = map.entrySet().stream().findFirst();
+		Map.Entry<String, HttpStatus> result = entry.get();
 		
-		Map<String, Boolean> response = new HashMap<String, Boolean>();
-		response.put("success", loaded);
+		String message = result.getKey();
+		
+		Map<String, String> response = new HashMap<String, String>();
+		response.put("response", message);
+		
+		HttpStatus status = result.getValue();
 
-		return loaded
-				? new ResponseEntity<>(response, HttpStatus.OK)
-				: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(response, status);
 	}
 	
 	@GetMapping("/drones/{serialNumber}/medications")

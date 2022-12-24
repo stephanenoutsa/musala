@@ -9,6 +9,7 @@ import com.musala.drones.repositories.MedicationRepository;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -100,12 +101,16 @@ public class MedicationService {
 	}
 	
 	@Transactional
-	public Boolean loadMedicationsOnDrone(UUID serialNumber, List<String> medicationCodes) {
+	public Map<String, HttpStatus> loadMedicationsOnDrone(UUID serialNumber, List<String> medicationCodes) {
+		Map<String, HttpStatus> response = new HashMap<String, HttpStatus>();
+		
 		try {
 			Optional<Drone> drone = this.droneRepository.findBySerialNumber(serialNumber);
 			
 			if (!drone.isPresent()) {
-				return false;
+				response.put("Drone not found", HttpStatus.NOT_FOUND);
+				
+				return response;
 			}
 			int droneCapacity = drone.get().getWeightLimit();
 			
@@ -124,11 +129,15 @@ public class MedicationService {
 			List<Medication> medicationsToLoad = this.medicationRepository.findByCodeIn(medicationCodes);
 			
 			if (drone.get().getBatteryCapacity() < 25) {
-				return false;
+				response.put("Drone battery level is too low", HttpStatus.FORBIDDEN);
+				
+				return response;
 			}
 			
 			// Set drone state to 'LOADING'
 			this.droneRepository.updateDroneState(State.LOADING, serialNumber);
+			
+			int numberLoaded = 0;
 			
 			for (Medication medication : medicationsToLoad) {
 				int weight = medication.getWeight();
@@ -141,16 +150,23 @@ public class MedicationService {
 				this.medicationRepository.loadMedicationOnDrone(drone.get(), code);
 				
 				availableCapacity -= weight;
+				numberLoaded++;
 			}
 			
 			// Set drone state to 'LOADED'
 			this.droneRepository.updateDroneState(State.LOADED, serialNumber);
 			
-			return true;
+			String message = String.format("%d out of %d medications loaded on", numberLoaded, medicationCodes.size());
+			
+			response.put(message, HttpStatus.OK);
+			
+			return response;
 		} catch (Exception e) {
 			e.printStackTrace();
 			
-			return false;
+			response.put(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			
+			return response;
 		}
 	}
 	
