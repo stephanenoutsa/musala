@@ -3,6 +3,7 @@ package com.musala.drones.controllers;
 import com.musala.drones.dto.MedicationDto;
 import com.musala.drones.services.MedicationService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,9 +56,12 @@ public class MedicationController {
 	@PostMapping("/drones/{serialNumber}/medications")
 	public ResponseEntity<?> loadMedicationsOnDrone(@PathVariable UUID serialNumber, @RequestBody List<String> codes) {
 		Boolean loaded = this.medicationService.loadMedicationsOnDrone(serialNumber, codes);
+		
+		Map<String, Boolean> response = new HashMap<String, Boolean>();
+		response.put("success", loaded);
 
 		return loaded
-				? new ResponseEntity<>(HttpStatus.OK)
+				? new ResponseEntity<>(response, HttpStatus.OK)
 				: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
