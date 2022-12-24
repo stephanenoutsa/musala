@@ -1,15 +1,19 @@
 package com.musala.drones.dto;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 public class MedicationDto {
 	@NotBlank(message = "Code value cannot be empty")
+	@Pattern(regexp = "^[A-Z0-9_]*$")
 	private String code;
 	
 	@NotBlank(message = "Name value cannot be empty")
+	@Pattern(regexp = "^[a-zA-Z0-9_-]*$")
 	private String name;
 	
-	@NotBlank(message = "Weight value cannot be empty")
+	@Min(1)
 	private Integer weight;
 	
 	private String image;

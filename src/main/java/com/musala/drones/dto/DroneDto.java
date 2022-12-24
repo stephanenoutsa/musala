@@ -1,29 +1,29 @@
 package com.musala.drones.dto;
 
+import com.musala.drones.annotations.EnumPattern;
 import com.musala.drones.constants.Model;
 import com.musala.drones.constants.State;
 
 import java.util.UUID;
 
-import javax.validation.constraints.NotBlank;
-
-import org.hibernate.validator.constraints.Length;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 public class DroneDto {
 	private UUID serialNumber;
 	
-	@NotBlank(message = "Model value cannot be empty")
+	@EnumPattern(regexp = "Lightweight|Middleweight|Cruiserweight|Heavyweight")
 	private Model model;
 	
-	@NotBlank(message = "Weight limit cannot be empty")
-	@Length(min = 0, max = 500, message = "Weight limit should be betweeen 0 and 500gr")
+	@Min(0)
+	@Max(500)
 	private Integer weightLimit;
 	
-	@NotBlank(message = "Battery capacity cannot be empty")
-	@Length(min = 0, max = 100, message = "Battery capacity should be betweeen 0 and 100%")
+	@Min(0)
+	@Max(100)
 	private Integer batteryCapacity;
 
-	@NotBlank(message = "State cannot be empty")
+	@EnumPattern(regexp = "IDLE|LOADING|LOADED|DELIVERING|DELIVERED|RETURNING")
 	private State state;
 
 	public UUID getSerialNumber() {

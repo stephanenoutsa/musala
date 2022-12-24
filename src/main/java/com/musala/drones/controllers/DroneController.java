@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +44,7 @@ public class DroneController {
 	}
 	
 	@PostMapping("/drones")
-	public ResponseEntity<?> registerDrone(@RequestBody DroneDto droneDto) {
+	public ResponseEntity<?> registerDrone(@RequestBody @Valid DroneDto droneDto) {
 		DroneDto response = this.droneService.registerDrone(droneDto);
 		
 		return response != null

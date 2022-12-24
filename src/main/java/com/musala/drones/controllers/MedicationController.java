@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +37,7 @@ public class MedicationController {
 	}
 	
 	@PostMapping("/medications")
-	public ResponseEntity<?> saveMedication(@RequestBody MedicationDto medicationDto) {
+	public ResponseEntity<?> saveMedication(@RequestBody @Valid MedicationDto medicationDto) {
 		MedicationDto response = this.medicationService.saveMedication(medicationDto);
 
 		return response != null
