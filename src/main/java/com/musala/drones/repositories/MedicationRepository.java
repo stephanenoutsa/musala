@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MedicationRepository extends JpaRepository<Medication, Integer> {
+	List<Medication> findByCodeIn(List<String> codes);
+
 	@Query("select m from Medication m where m.drone.serialNumber = :serialNumber")
 	List<Medication> findMedicationsOnDrone(@Param(value = "serialNumber") UUID serialNumber);
 	
