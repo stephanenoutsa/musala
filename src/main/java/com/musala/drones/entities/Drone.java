@@ -53,6 +53,9 @@ public class Drone implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "drone", fetch = FetchType.LAZY)
 	private List<Medication> medications;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "drone", fetch = FetchType.LAZY)
+	private List<BatteryLevelRecord> batteryLevelRecords;
 
 	public UUID getSerialNumber() {
 		return serialNumber;
@@ -102,9 +105,17 @@ public class Drone implements Serializable {
 		this.medications = medications;
 	}
 
+	public List<BatteryLevelRecord> getBatteryLevelRecords() {
+		return batteryLevelRecords;
+	}
+
+	public void setBatteryLevelRecords(List<BatteryLevelRecord> batteryLevelRecords) {
+		this.batteryLevelRecords = batteryLevelRecords;
+	}
+
 	@Override
 	public String toString() {
 		return "Drone [serialNumber=" + serialNumber + ", model=" + model + ", weightLimit=" + weightLimit
-				+ ", batteryCapacity=" + batteryCapacity + ", state=" + state + ", medications=" + medications + "]";
+				+ ", batteryCapacity=" + batteryCapacity + ", state=" + state + "]";
 	}
 }

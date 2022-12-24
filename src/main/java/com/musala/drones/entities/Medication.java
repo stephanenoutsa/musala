@@ -73,6 +73,6 @@ public class Medication implements Serializable {
 	@Override
 	public String toString() {
 		return "Medication [code=" + code + ", name=" + name + ", weight=" + weight + ", image=" + image + ", drone="
-				+ drone + "]";
+				+ drone.getSerialNumber().toString() + "]";
 	}
 }
