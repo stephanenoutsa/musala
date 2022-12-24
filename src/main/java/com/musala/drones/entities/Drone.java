@@ -24,6 +24,8 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "drone")
 public class Drone implements Serializable {
+	private static final long serialVersionUID = 5684597485999947004L;
+
 	@Id
 	@GeneratedValue
 	@Column(name = "serial_number", length = 100, unique = true, nullable = false)
