@@ -17,7 +17,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 import org.hibernate.annotations.Type;
 
@@ -37,12 +38,14 @@ public class Drone implements Serializable {
 	private Model model;
 	
 	@Column(name = "weight_limit")
-	@Size(min = 0, max = 500)
-	private int weightLimit;
+	@Min(0)
+	@Max(500)
+	private Integer weightLimit;
 	
 	@Column(name = "battery_capacity")
-	@Size(min = 0, max = 100)
-	private int batteryCapacity;
+	@Min(0)
+	@Max(100)
+	private Integer batteryCapacity;
 	
 	@Column(name = "state")
 	@Enumerated(EnumType.STRING)
@@ -71,7 +74,7 @@ public class Drone implements Serializable {
 		return weightLimit;
 	}
 
-	public void setWeightLimit(int weightLimit) {
+	public void setWeightLimit(Integer weightLimit) {
 		this.weightLimit = weightLimit;
 	}
 
@@ -79,7 +82,7 @@ public class Drone implements Serializable {
 		return batteryCapacity;
 	}
 
-	public void setBatteryCapacity(int batteryCapacity) {
+	public void setBatteryCapacity(Integer batteryCapacity) {
 		this.batteryCapacity = batteryCapacity;
 	}
 
