@@ -27,7 +27,7 @@ public class Medication implements Serializable {
 	private String image;
 
 	@ManyToOne()
-	@JoinColumn(name = "serial_number", referencedColumnName = "serial_number", nullable = false)
+	@JoinColumn(name = "serial_number", referencedColumnName = "serial_number", nullable = true)
 	private Drone drone;
 	
 	public String getCode() {
