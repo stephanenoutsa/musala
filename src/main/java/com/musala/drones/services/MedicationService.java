@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,8 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
 
 @Service
 public class MedicationService {
@@ -47,7 +46,6 @@ public class MedicationService {
 	        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, file.getOriginalFilename());
 	        fileNames.append(file.getOriginalFilename());
 	        Files.write(fileNameAndPath, file.getBytes());
-	        System.out.println("Uploaded images: " + fileNameAndPath.toString());
 	        
 	        Map<String, String> imageUrl = new HashMap<String, String>();
 	        imageUrl.put("imageUrl", fileNameAndPath.toString());
@@ -62,8 +60,6 @@ public class MedicationService {
 	
 	public MedicationDto saveMedication(MedicationDto medicationDto) {
 		try {
-			// TODO: Validate medicationDto
-
 			Medication medication = convertDtoToEntity(medicationDto);
 			
 			medication = this.medicationRepository.save(medication);

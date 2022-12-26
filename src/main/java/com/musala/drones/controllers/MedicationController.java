@@ -43,7 +43,7 @@ public class MedicationController {
 		MedicationDto response = this.medicationService.saveMedication(medicationDto);
 
 		return response != null
-				? new ResponseEntity<>(response, HttpStatus.OK)
+				? new ResponseEntity<>(response, HttpStatus.CREATED)
 				: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	

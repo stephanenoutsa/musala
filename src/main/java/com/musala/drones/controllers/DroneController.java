@@ -48,7 +48,7 @@ public class DroneController {
 		DroneDto response = this.droneService.registerDrone(droneDto);
 		
 		return response != null
-				? new ResponseEntity<>(response, HttpStatus.OK)
+				? new ResponseEntity<>(response, HttpStatus.CREATED)
 				: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
